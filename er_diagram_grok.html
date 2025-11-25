@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banking ER Diagram - Domains Owned by Jane Doe</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9f9fc; padding: 20px; }
+        h1, h2 { color: #1a4278; }
+        .domain { margin-bottom: 50px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .mermaid { background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 6px; overflow-x: auto; }
+        caption { font-weight: bold; font-size: 1.4em; margin-bottom: 15px; color: #1a4278; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default', 
+            flowchart: { useMaxWidth: true, htmlLabels: true },
+            er: { useMaxWidth: true }
+        });
+    </script>
+</head>
+<body>
+
+<h1>Banking Conceptual ER Diagram<br><small>Domains Owned by Jane Doe</small></h1>
+
+<div class="domain">
+    <h2>1. Account Management</h2>
+    <div class="mermaid">
+        erDiagram
+            ACCOUNT {
+                string id PK
+                string type
+            }
+            ACCOUNT_TRANSACTION {
+                string id PK
+                date timestamp
+                decimal amount
+            }
+            BALANCE {
+                decimal amount PK
+                date as_of
+            }
+            ACCOUNT_STATEMENT {
+                string id PK
+                date period_start
+                date period_end
+            }
+            ACCOUNT_HOLDER {
+                string id PK
+                string name
+            }
+            AUTHORIZED_PARTY {
+                string id PK
+                string role
+            }
+            ACCOUNT_PROVIDER {
+                string id PK
+                string name
+            }
+            AUTHORIZING_PARTY {
+                string id PK
+                string name
+            }
+            AUTHORIZATION {
+                string id PK
+                date valid_from
+                date valid_to
+            }
+            ACCOUNT_IDENTIFIER {
+                string code PK
+                string format
+            }
+            CASH_DEPOSIT {
+                string id PK
+                decimal amount
+                date date
+            }
+            ACCRUAL {
+                string id PK
+                decimal amount
+                date period
+            }
+            COMPOUND_INTEREST {
+                decimal rate PK
+                int periods
+            }
+            BANK {
+                string id PK
+                string name
+                string bic
+            }
+            DEMAND_DEPOSIT_ACCOUNT {
+                string id PK
+            }
+            DEPOSIT_ACCOUNT {
+                string id PK
+                int term_months
+            }
+            CERTIFICATE_OF_DEPOSIT {
+                string id PK
+                decimal interest_rate
+            }
+            CLIENT_ACCOUNT {
+                string id PK
+                string client_ref
+            }
+            CASH_ACCOUNT {
+                string id PK
+                bool margin_allowed "false"
+            }
+            ACCOUNT ||--o{ ACCOUNT_TRANSACTION : "has"
+            ACCOUNT ||--o{ BALANCE : "has_current"
+            ACCOUNT ||--o{ ACCOUNT_STATEMENT : "generates"
+            ACCOUNT ||--o{ ACCOUNT_HOLDER : "owned_by"
+            ACCOUNT ||--o{ AUTHORIZED_PARTY : "has"
+            ACCOUNT_PROVIDER ||--o{ ACCOUNT : "provides"
+            ACCOUNT_HOLDER }o--o{ AUTHORIZING_PARTY : "authorizes"
+            AUTHORIZING_PARTY ||--o{ AUTHORIZATION : "grants"
+            AUTHORIZATION ||--o{ AUTHORIZED_PARTY : "to"
+            ACCOUNT ||--|{ ACCOUNT_IDENTIFIER : "identified_by"
+            ACCOUNT ||--o{ CASH_DEPOSIT : "receives"
+            ACCOUNT ||--o{ ACCRUAL : "accrues"
+            ACCRUAL ||--o{ COMPOUND_INTEREST : "compounds_as"
+            BANK ||--o{ ACCOUNT : "hosts"
+            DEMAND_DEPOSIT_ACCOUNT ||--|| ACCOUNT : "extends"
+            DEPOSIT_ACCOUNT ||--|| ACCOUNT : "extends"
+            CERTIFICATE_OF_DEPOSIT ||--|| DEPOSIT_ACCOUNT : "extends"
+            CLIENT_ACCOUNT ||--|| ACCOUNT : "extends"
+            CASH_ACCOUNT ||--|| ACCOUNT : "extends"
+    </div>
+</div>
+
+<div class="domain">
+    <h2>2. Customer Relationship Management</h2>
+    <div class="mermaid">
+        erDiagram
+            PARTY {
+                string id PK
+                string type
+            }
+            CONTACT_INFORMATION {
+                string id PK
+                string phone
+                string email
+            }
+            ADDRESS {
+                string id PK
+                string street
+                string city
+                string country_code
+            }
+            CUSTOMER {
+                string id PK
+                string status
+            }
+            ACCOUNT {
+                string id PK
+                string number
+            }
+            BENEFICIARY {
+                string id PK
+                string designation
+            }
+            LEGAL_ENTITY {
+                string id PK
+                string registration_number
+            }
+            NATURAL_PERSON {
+                string id PK
+                string ssn
+            }
+            CORPORATION {
+                string id PK
+                string ein
+            }
+            CLIENT {
+                string id PK
+                string tier
+            }
+            CLIENT_ACCOUNT {
+                string id PK
+                string ref
+            }
+            BENEFICIAL_OWNER {
+                string id PK
+                decimal percentage
+            }
+            BENEFICIAL_OWNERSHIP {
+                string id PK
+                date established
+            }
+            BOARD_MEMBER {
+                string id PK
+                string role
+            }
+            BOARD_OF_DIRECTORS {
+                string id PK
+                date elected
+            }
+            ORGANIZATION {
+                string id PK
+                string name
+            }
+            CONSENT {
+                string id PK
+                bool granted
+                date valid_until
+            }
+            COMPLAINT {
+                string id PK
+                string description
+                status status
+            }
+            CITIZENSHIP {
+                string id PK
+                string country_code
+                date acquired
+            }
+            DATE_OF_BIRTH {
+                date value PK
+            }
+            DATE_OF_DEATH {
+                date value PK
+            }
+            BUSINESS_RELATIONSHIP {
+                string id PK
+                string type
+                date start_date
+            }
+            AFFILIATE {
+                string id PK
+                string relation_type
+            }
+            AFFILIATION {
+                string id PK
+                date from_date
+                date to_date
+            }
+            PARTY ||--o{ CONTACT_INFORMATION : "has"
+            PARTY ||--o{ ADDRESS : "registered_at"
+            PARTY ||--o{ CUSTOMER : "may_be"
+            CUSTOMER ||--o{ ACCOUNT : "holds"
+            CUSTOMER ||--o{ BENEFICIARY : "designates"
+            LEGAL_ENTITY ||--|| PARTY : "is_a"
+            NATURAL_PERSON ||--|| PARTY : "is_a"
+            CORPORATION ||--|| LEGAL_ENTITY : "is_a"
+            CUSTOMER ||--o{ CLIENT : "is_a"
+            CLIENT ||--o{ CLIENT_ACCOUNT : "owns"
+            PARTY ||--o{ BENEFICIAL_OWNER : "has"
+            BENEFICIAL_OWNER ||--o{ BENEFICIAL_OWNERSHIP : "exercises"
+            PARTY ||--o{ BOARD_MEMBER : "has_role"
+            BOARD_OF_DIRECTORS ||--o{ BOARD_MEMBER : "comprises"
+            ORGANIZATION ||--o{ BOARD_OF_DIRECTORS : "governed_by"
+            CUSTOMER ||--o{ CONSENT : "provides"
+            CUSTOMER ||--o{ COMPLAINT : "lodges"
+            PARTY ||--o{ CITIZENSHIP : "holds"
+            NATURAL_PERSON ||--o{ DATE_OF_BIRTH : "has"
+            NATURAL_PERSON ||--o{ DATE_OF_DEATH : "has"
+            PARTY ||--o{ BUSINESS_RELATIONSHIP : "participates_in"
+            AFFILIATE ||--o{ AFFILIATION : "has"
+    </div>
+</div>
+
+<p><strong>Note:</strong> This ER diagram has been updated to comply with Mermaid version 11 syntax. Key changes include adding attribute definitions to entities (with PK for primary keys) and using "extends" for inheritance relationships to avoid unsupported keywords like "is a". The diagrams focus on the two major service domains owned by Jane Doe: <em>Account Management</em> and <em>Customer Relationship Management</em>.</p>
+
+<p>The diagrams use Chen-style ER notation rendered via Mermaid:</p>
+<ul>
+    <li><strong>||--o{</strong> = One-to-Many (mandatory on the "one" side)</li>
+    <li><strong>}o--o{</strong> = Many-to-Many</li>
+    <li><strong>||--|{</strong> = One-to-Many identifying relationship</li>
+    <li><strong>||--||</strong> = Specialization / Inheritance</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jane Doe: Banking Domain ER Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            er: {
+                diagramPadding: 20,
+                layoutDirection: 'TB',
+                minEntityWidth: 100,
+                entityPadding: 15
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-account { background-color: #e67e22; }
+        .badge-crm { background-color: #27ae60; }
+        .citation {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Banking Data Architecture: Jane Doe Domains</h1>
+    <p><strong>Architect:</strong> Senior Banking Data Architect</p>
+    <p><strong>Scope:</strong> Account Management & Customer Relationship Management (CRM)</p>
+    <p><strong>Source:</strong> <em>banking_elements_hierarchical (1).json</em></p>
+
+    <h2>Entity-Relationship Diagram</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+erDiagram
+    %% Domain: Customer Relationship Management (CRM)
+    CUSTOMER {
+        string Business_Legal_Name "If Business Entity"
+        string Date_Of_Birth "If Individual"
+        string Citizenship
+        string KYC_Status
+    }
+    
+    PARTY_ROLE {
+        string Role_Type "Actor, Agent, Auditor, Beneficial Owner"
+        string Description
+    }
+
+    CONTACT_INFORMATION {
+        string Address_Line
+        string Communication_Channel
+        string Address_Type "Business or Personal"
+    }
+
+    AGREEMENT {
+        string Agreement_Type "Agency, Service Level"
+        date Contract_Date
+        string Status
+    }
+
+    RELATIONSHIP {
+        string Type "Affiliation, Employment, Family"
+        string Status
+    }
+
+    %% Domain: Account Management
+    ACCOUNT {
+        string Account_Identifier "Unique ID"
+        string Account_Type "Demand Deposit, Cash, Investment"
+        string Status "Active, Closed"
+    }
+
+    BALANCE {
+        float Amount
+        string Currency
+        string Balance_Type "Available, Ledger"
+    }
+
+    TRANSACTION {
+        string Transaction_Type "Cash Deposit, Accounting"
+        float Amount
+        date Transaction_Date
+    }
+
+    BANK_INSTITUTION {
+        string Name
+        string Type "Commercial, Central, Bankers Bank"
+        string Routing_Info
+    }
+
+    STATEMENT {
+        date Period_Start
+        date Period_End
+        string Summary
+    }
+
+    %% Relationships
+    CUSTOMER ||--o{ ACCOUNT : "holds/owns"
+    CUSTOMER ||--o{ CONTACT_INFORMATION : "resides_at/contactable_via"
+    CUSTOMER ||--o{ PARTY_ROLE : "acts_as"
+    CUSTOMER ||--o{ AGREEMENT : "signatory_to"
+    CUSTOMER }|--|{ RELATIONSHIP : "participates_in"
+    
+    ACCOUNT ||--o{ BALANCE : "maintains"
+    ACCOUNT ||--o{ TRANSACTION : "records"
+    ACCOUNT ||--o{ STATEMENT : "generates"
+    ACCOUNT }|--|| AGREEMENT : "governed_by"
+    
+    BANK_INSTITUTION ||--o{ ACCOUNT : "provisions/services"
+    BANK_INSTITUTION ||--|| CONTACT_INFORMATION : "located_at"
+
+    AGREEMENT }|--|| BANK_INSTITUTION : "issued_by"
+        </div>
+    </div>
+
+    <h2>Data Dictionary & Domain Definitions</h2>
+
+    <h3>1. Account Management Domain</h3>
+    <p><strong>Owner:</strong> Jane Doe <span class="citation"></span></p>
+    <p><strong>Definition:</strong> A collection of service domains responsible for handling various aspects of banking account operations.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Entity / Element</th>
+                <th>Description</th>
+                <th>Subdomain</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Account</strong></td>
+                <td>Container for records associated with a business arrangement for regular transactions and services. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Account Core</span></td>
+            </tr>
+            <tr>
+                <td><strong>Balance</strong></td>
+                <td>Amount of money available or owed. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Account Core</span></td>
+            </tr>
+            <tr>
+                <td><strong>Account Holder</strong></td>
+                <td>Party that owns an account. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Account Parties</span></td>
+            </tr>
+            <tr>
+                <td><strong>Accounting Transaction</strong></td>
+                <td>Event recognized by an entry in the records of an account. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Account Transactions</span></td>
+            </tr>
+            <tr>
+                <td><strong>Account Statement</strong></td>
+                <td>Periodic summary of account activity for a given period of time. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Account Reporting</span></td>
+            </tr>
+            <tr>
+                <td><strong>Demand Deposit</strong></td>
+                <td>A bank account (like a checking account) from which funds can be withdrawn at any time without advance notice. <span class="citation"></span></td>
+                <td><span class="badge badge-account">Deposit Accounts</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2. Customer Relationship Management (CRM) Domain</h3>
+    <p><strong>Owner:</strong> Jane Doe <span class="citation"></span></p>
+    <p><strong>Definition:</strong> Governs the full lifecycle of customer engagement, including onboarding, relationship development, and eventual closure.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Entity / Element</th>
+                <th>Description</th>
+                <th>Subdomain</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Customer</strong></td>
+                <td>A party who receives a service or product from a seller or service provider. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Party Management</span></td>
+            </tr>
+            <tr>
+                <td><strong>Beneficial Owner</strong></td>
+                <td>Party that enjoys the benefits of ownership of something even though title may be in another name. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Party Ownership</span></td>
+            </tr>
+            <tr>
+                <td><strong>Business Entity</strong></td>
+                <td>An organization formed to conduct business, engage in commerce, or carry out a mission. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Legal Entity Management</span></td>
+            </tr>
+            <tr>
+                <td><strong>Address</strong></td>
+                <td>Index to a location to which communications may be delivered. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Party Contact Information</span></td>
+            </tr>
+            <tr>
+                <td><strong>Agreement</strong></td>
+                <td>Negotiated understanding between two or more parties reflecting offer and acceptance. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Party Agreements</span></td>
+            </tr>
+            <tr>
+                <td><strong>Affiliate</strong></td>
+                <td>Party that is related to a legal entity, directly or indirectly controlling or controlled by it. <span class="citation"></span></td>
+                <td><span class="badge badge-crm">Party Relationships</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
